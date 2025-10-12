@@ -17,9 +17,3 @@ if ($result && $result->num_rows > 0) {
 
 echo json_encode($data, JSON_UNESCAPED_UNICODE);
 $conn->close();
-function select_tb($table, $conn)
-{
-    $sql = "SELECT * FROM $table";
-    $result = $conn->query($sql);
-    return $result;
-}
