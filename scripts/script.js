@@ -1,4 +1,3 @@
-//
 // function sortTable(header) {
 //   const table = header.closest("table");
 //   const tbody = table.tBodies[0];
@@ -63,11 +62,9 @@ async function loadTable() {
       return;
     }
 
-    // Создаём заголовки
     const columns = Object.keys(data[0]);
     tableHeader.innerHTML = columns.map(col => `<th>${col}</th>`).join('');
 
-    // Создаём строки
     tableBody.innerHTML = data.map(row => {
       return `<tr>${columns.map(col => `<td>${row[col]}</td>`).join('')}</tr>`;
     }).join('');
