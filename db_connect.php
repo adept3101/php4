@@ -4,7 +4,7 @@ function connect()
   $servername = "localhost";
   $username = "php";
   $password = "3101";
-  $dbname = "lap";
+  $dbname = "l";
 
   $conn = new mysqli($servername, $username, $password, $dbname);
   if ($conn->connect_error) {
