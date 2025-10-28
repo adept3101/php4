@@ -1,30 +1,69 @@
 async function loadTable() {
-  try {
-    const response = await fetch('getData.php');
-    const data = await response.json();
+    try {
+        const response = await fetch('getData.php');
+        const data = await response.json();
 
-    const tableHeader = document.getElementById('table-header');
-    const tableBody = document.getElementById('table-body');
 
-    if (data.length === 0) {
-      tableBody.innerHTML = '<tr><td colspan="100%">Нет данных</td></tr>';
-      return;
+
+        const tableHeader = document.getElementById('table-header');
+        const tableBody = document.getElementById('table-body');
+        const material_id = document.getElementById('material_id');
+
+        if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="100%">Нет данных</td></tr>';
+            return;
+        }
+
+        const columns = Object.keys(data[0]);
+
+        tableHeader.innerHTML = columns.map(col =>
+            `<th onclick="sortTable(this)">${col}</th>`
+        ).join('');
+
+        tableBody.innerHTML = data.map(row => {
+            return `<tr>${columns.map(col => `<td>${row[col]}</td>`).join('')}</tr>`;
+        }).join('');
+
+        const uniqueMaterialIds = [...new Set(data.map(row => row.material))];
+        // const materialIds = [... new Set(data.map(row => row.id))];
+        material_id.innerHTML = uniqueMaterialIds.map(id =>
+            `<option value="${id}">${id}</option>`
+        ).join('');
+
+    } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+    }
+}
+
+async function addData() {
+    const data = {
+        id: document.getElementById('id').value,
+        tittle: document.getElementById('tittle').value,
+        size: document.getElementById('size').value,
+        color: document.getElementById('color').value,
+        cost: document.getElementById('cost').value,
+        material_id: document.getElementById('material_id').value
     }
 
-    const columns = Object.keys(data[0]);
-    
-    // Создаем заголовки с обработчиками клика
-    tableHeader.innerHTML = columns.map(col => 
-      `<th onclick="sortTable(this)">${col}</th>`
-    ).join('');
+    try {
+        const response = await fetch('postData.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const res = await response.json();
 
-    tableBody.innerHTML = data.map(row => {
-      return `<tr>${columns.map(col => `<td>${row[col]}</td>`).join('')}</tr>`;
-    }).join('');
+        if (res.success) {
+            alert("Good");
+            document.getElementById('addCamera').reset();
+            loadTable();
+        } else {
+            alert("Ошибка");
+        }
 
-  } catch (error) {
-    console.error('Ошибка загрузки данных:', error);
-  }
+    } catch (error) {
+        console.error("Error:", error);
+    }
 }
 
 function sortTable(header) {
@@ -32,11 +71,11 @@ function sortTable(header) {
     const tbody = table.tBodies[0];
     const rows = Array.from(tbody.rows);
     const columnIndex = header.cellIndex;
-    
+
     // Получаем текущий порядок сортировки из data-атрибута
     const currentSortOrder = tbody.dataset.sortOrder;
     const currentSortColumn = tbody.dataset.sortColumn;
-    
+
     // Определяем направление сортировки
     let isAscending;
     if (currentSortColumn === columnIndex.toString()) {
@@ -82,7 +121,7 @@ function sortTable(header) {
     // Сохраняем состояние сортировки
     tbody.dataset.sortOrder = isAscending ? "asc" : "desc";
     tbody.dataset.sortColumn = columnIndex;
-    
+
     // Добавляем визуальные индикаторы сортировки (опционально)
     updateSortIndicators(header, isAscending);
 }
@@ -94,9 +133,13 @@ function updateSortIndicators(activeHeader, isAscending) {
     allHeaders.forEach(header => {
         header.classList.remove('sorted-asc', 'sorted-desc');
     });
-    
+
     // Добавляем индикатор на активный заголовок
     activeHeader.classList.add(isAscending ? 'sorted-asc' : 'sorted-desc');
 }
 
+document.getElementById('addCamera').addEventListener('submit', function(event) {
+    event.preventDefault(); // Останавливаем стандартную отправку формы
+    addData(); // Запускаем твою функцию AJAX
+});
 loadTable();
