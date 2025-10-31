@@ -1,11 +1,14 @@
-
-async function loadTable() {
+async function loadTable(tableName) {
     try {
-        const response = await fetch('getData.php');
-        const data = await response.json();
+        const response = await fetch('getData.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `tableName=${encodeURIComponent(tableName)}`
+        });
 
-        const tableHeader = document.getElementById('table-header');
-        const tableBody = document.getElementById('table-body');
+        const data = await response.json();
 
         if (data.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="100%">Нет данных</td></tr>';
@@ -14,23 +17,72 @@ async function loadTable() {
 
         const columns = Object.keys(data[0]);
 
-        // Создаем заголовки с обработчиками клика
-        tableHeader.innerHTML = columns.map(col =>
-            `<th onclick="sortTable(this)">${col}</th>`
-        ).join('');
+        if (tableName === 'camera') {
+            const tableHeader = document.getElementById('table-header');
+            const tableBody = document.getElementById('table-body');
 
-        tableBody.innerHTML = data.map(row => {
-            return `<tr>${columns.map(col => `<td>${row[col]}</td>`).join('')}</tr>`;
-        }).join('');
+            tableHeader.innerHTML = columns.map(col =>
+                `<th onclick="sortTable(this)">${col}</th>`
+            ).join('');
+
+            tableBody.innerHTML = data.map(row => {
+                return `<tr>${columns.map(col => `<td>${row[col]}</td>`).join('')}</tr>`;
+            }).join('');
+        }
+        else if (tableName === 'material') {
+            const materialSelect = document.getElementById('material_id');
+            const uniqueMaterialIds = [...new Set(data.map(row => row.material))];
+
+            materialSelect.innerHTML = uniqueMaterialIds.map(id =>
+                `<option value="${id}">${id}</option>`
+            ).join('');
+        }
+        else {
+            console.error('Нет такой таблицы:', error);
+        }
 
     } catch (error) {
         console.error('Ошибка загрузки данных:', error);
     }
 }
 
+async function addData() {
+    const data = {
+        id: document.getElementById('id').value,
+        tittle: document.getElementById('tittle').value,
+        size: document.getElementById('size').value,
+        color: document.getElementById('color').value,
+        cost: document.getElementById('cost').value,
+        material_id: document.getElementById('material_id').value
+    }
+
+    try {
+        const response = await fetch('postData.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Данные успешно добавлены!');
+            document.getElementById('addCamera').reset();
+            loadTable('camera');
+        } else {
+            alert('Ошибка: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+    }
+}
+
 function sortTable(header) {
-    const table = document.getElementById("data-table"); // Исправлено: document.getElementById
+    const table = document.getElementById("data-table");
     const tbody = table.tBodies[0];
+
     const rows = Array.from(tbody.rows);
     const columnIndex = header.cellIndex;
 
@@ -100,4 +152,16 @@ function updateSortIndicators(activeHeader, isAscending) {
     activeHeader.classList.add(isAscending ? 'sorted-asc' : 'sorted-desc');
 }
 
-loadTable();
+document.getElementById('addCamera').addEventListener('submit', function(event) {
+    event.preventDefault();
+    addData();
+});
+
+loadTable('camera').then(data => {
+    console.log(data);
+});
+
+loadTable('material').then(data => {
+    console.log(data);
+});
+

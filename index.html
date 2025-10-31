@@ -16,16 +16,17 @@
     <tbody id="table-body">
     </tbody>
   </table>
-  <form method="POST" action="postData.php">
-    <input name="id" type="text"><br>
-    <input name="tittle" type="text"><br>
-    <input name="size" type="text"><br>
-    <input name="color" type="text"><br>
-    <input name="cost" type="text"><br>
-    <input name="material_id" type="text"><br>
+  <form id="addCamera" method="POST" action="postData.php">
+    <input id="id" name="id" type="text"><br>
+    <input id="tittle" name="tittle" type="text"><br>
+    <input id="size" name="size" type="text"><br>
+    <input id="color" name="color" type="text"><br>
+    <input id="cost" name="cost" type="text"><br>
+    <select name="material_id" id="material_id" required>
+    </select>
+    <br>
     <input type="submit" value="Отправить" />
   </form>
-
   <script src="scripts/script.js"></script>
 </body>
 
