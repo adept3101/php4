@@ -39,4 +39,5 @@ function postData()
 }
 
 $res = postData();
+
 echo json_encode($res);

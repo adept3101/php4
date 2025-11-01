@@ -2,11 +2,14 @@
 header("Content-Type: application/json; charset=UTF-8");
 include "db_connect.php";
 
-function getData(){
+/* $data = json_decode(); */
+
+function getData($table_name){
+    
     $conn = connect();
 
-    $table = "camera";
-    $result = select_tb($table, $conn);
+    /* $table = "camera"; */
+    $result = select_tb($table_name, $conn);
 
     $data = [];
 
@@ -20,4 +23,17 @@ function getData(){
     $conn->close();
 }
 
-$result = getData();
+/* $result = getData("camera"); */
+/* $res = getData("material") */
+
+$input = json_decode(file_get_contents('php://input'), true);
+$tableName = $input['tableName'] ?? '';
+
+if ($tableName) {
+    getData($tableName);
+} else {
+    echo json_encode(['error' => 'No table name provided']);
+}
+
+
+$res = getData($data);

@@ -3,9 +3,9 @@ async function loadTable(tableName) {
         const response = await fetch('getData.php', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
             },
-            body: `tableName=${encodeURIComponent(tableName)}`
+            body: JSON.stringify({ tableName: tableName })
         });
 
         const data = await response.json();
@@ -30,15 +30,19 @@ async function loadTable(tableName) {
             }).join('');
         }
         else if (tableName === 'material') {
-            const materialSelect = document.getElementById('material_id');
-            const uniqueMaterialIds = [...new Set(data.map(row => row.material))];
+            console.log(data);
+            const material_id = document.getElementById('material_id');
+            // const material = document.getElementById('material');
+            const uniqueMaterialIds = [...new Set(data.map(row => row.id))];
+            // const nameMaterial = [...new Set(data.map(row => row.material))];
 
-            materialSelect.innerHTML = uniqueMaterialIds.map(id =>
+            material_id.innerHTML = uniqueMaterialIds.map(id =>
                 `<option value="${id}">${id}</option>`
             ).join('');
+
         }
         else {
-            console.error('Нет такой таблицы:', error);
+            console.error('Error', error);
         }
 
     } catch (error) {
@@ -76,6 +80,7 @@ async function addData() {
         }
     } catch (error) {
         console.error('Ошибка:', error);
+
     }
 }
 
@@ -164,4 +169,5 @@ loadTable('camera').then(data => {
 loadTable('material').then(data => {
     console.log(data);
 });
+
 
