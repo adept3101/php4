@@ -32,12 +32,24 @@ async function loadTable(tableName) {
         else if (tableName === 'material') {
             console.log(data);
             const material_id = document.getElementById('material_id');
-            // const material = document.getElementById('material');
-            const uniqueMaterialIds = [...new Set(data.map(row => row.id))];
-            // const nameMaterial = [...new Set(data.map(row => row.material))];
 
-            material_id.innerHTML = uniqueMaterialIds.map(id =>
-                `<option value="${id}">${id}</option>`
+            const uniqueMaterials = [];
+            const seenIds = new Set();
+
+            data.forEach(row => {
+                if (!seenIds.has(row.id)) {
+                    seenIds.add(row.id);
+                    uniqueMaterials.push({
+                        id: row.id,
+                        name: row.material
+                    });
+                }
+            });
+
+            // uniqueMaterials.sort((a, b) => a.name.localeCompare(b.name));
+
+            material_id.innerHTML = uniqueMaterials.map(material =>
+                `<option value="${material.id}">${material.name}</option>`
             ).join('');
 
         }

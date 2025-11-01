@@ -6,7 +6,6 @@ function postData()
 {
     $conn = connect();
 
-    // Получаем JSON данные
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
