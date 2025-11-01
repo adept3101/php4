@@ -1,13 +1,14 @@
-async function loadTable() {
+async function loadTable(tableName) {
     try {
-        const response = await fetch('getData.php');
+        const response = await fetch('getData.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ tableName: tableName })
+        });
+
         const data = await response.json();
-
-
-
-        const tableHeader = document.getElementById('table-header');
-        const tableBody = document.getElementById('table-body');
-        const material_id = document.getElementById('material_id');
 
         if (data.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="100%">Нет данных</td></tr>';
@@ -16,19 +17,33 @@ async function loadTable() {
 
         const columns = Object.keys(data[0]);
 
-        tableHeader.innerHTML = columns.map(col =>
-            `<th onclick="sortTable(this)">${col}</th>`
-        ).join('');
+        if (tableName === 'camera') {
+            const tableHeader = document.getElementById('table-header');
+            const tableBody = document.getElementById('table-body');
 
-        tableBody.innerHTML = data.map(row => {
-            return `<tr>${columns.map(col => `<td>${row[col]}</td>`).join('')}</tr>`;
-        }).join('');
+            tableHeader.innerHTML = columns.map(col =>
+                `<th onclick="sortTable(this)">${col}</th>`
+            ).join('');
 
-        const uniqueMaterialIds = [...new Set(data.map(row => row.material))];
-        // const materialIds = [... new Set(data.map(row => row.id))];
-        material_id.innerHTML = uniqueMaterialIds.map(id =>
-            `<option value="${id}">${id}</option>`
-        ).join('');
+            tableBody.innerHTML = data.map(row => {
+                return `<tr>${columns.map(col => `<td>${row[col]}</td>`).join('')}</tr>`;
+            }).join('');
+        }
+        else if (tableName === 'material') {
+            console.log(data);
+            const material_id = document.getElementById('material_id');
+            // const material = document.getElementById('material');
+            const uniqueMaterialIds = [...new Set(data.map(row => row.id))];
+            // const nameMaterial = [...new Set(data.map(row => row.material))];
+
+            material_id.innerHTML = uniqueMaterialIds.map(id =>
+                `<option value="${id}">${id}</option>`
+            ).join('');
+
+        }
+        else {
+            console.error('Error', error);
+        }
 
     } catch (error) {
         console.error('Ошибка загрузки данных:', error);
@@ -142,4 +157,9 @@ document.getElementById('addCamera').addEventListener('submit', function(event) 
     event.preventDefault(); // Останавливаем стандартную отправку формы
     addData(); // Запускаем твою функцию AJAX
 });
-loadTable();
+loadTable('camera').then(data => {
+    console.log(data);
+});
+loadTable('material').then(data => {
+    console.log(data);
+});
