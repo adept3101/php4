@@ -182,4 +182,15 @@ loadTable('material').then(data => {
     console.log(data);
 });
 
+function xlsx(){
+  const exportBtn = document.getElementById('btn-export');
+  const table = document.getElementById('data-table');
+  exportBtn.addEventListener('click', () => {
+  /* Create worksheet from HTML DOM TABLE */
+  const wb = XLSX.utils.table_to_book(table, {sheet: 'sheet-1'});
 
+  /* Export to file (start a download) */
+  XLSX.writeFile(wb, 'MyTable.xlsx');
+  });
+}
+xlsx();
