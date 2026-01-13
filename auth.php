@@ -1,30 +1,33 @@
 <?php
-header("Content-Type: application/json; charset=UTF-8");
-include "db_connect.php";
+session_start();
 
-function register(){
-
+function auth($login, $password) {
+    // Подключение к базе данных
+    include "db_connect.php";
     $conn = connect();
-
-    $json = file_get_contents('php://input');
-    $data = json_decode($json, true);
-
-    $login = $conn->real_escape_string($data['login'] ?? '');
-    $password = $conn->real_escape_string($data['password'] ?? '');
-
-    $sql = "INSERT INTO users (login, password) VALUES ('$login', '$password')";
-
-    if ($conn->query($sql) === TRUE) {
-        $result = ['success' => true, 'message' => 'Новая запись успешно добавлена'];
+    
+    // Экранирование данных для безопасности
+    $login = $conn->real_escape_string($login);
+    $password = $conn->real_escape_string($password);
+    
+    // Запрос для проверки пользователя
+    $sql = "SELECT * FROM users WHERE login = '$login' AND password = '$password'";
+    $result = $conn->query($sql);
+    
+    if ($result && $result->num_rows > 0) {
+        // Пользователь найден, записываем данные в сессию
+        $user = $result->fetch_assoc();
+        
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_login'] = $user['login'];
+        $_SESSION['is_authorized'] = true;
+        
+        $conn->close();
+        return true;
     } else {
-        $result = ['success' => false, 'error' => $conn->error];
+        // Пользователь не найден
+        $conn->close();
+        return false;
     }
-
-    $conn->close();
-    return $result;
 }
-
-$res = register();
-
-echo json_encode($res);
-
+?>
