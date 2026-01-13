@@ -53,6 +53,28 @@ async function loadTable(tableName) {
             ).join('');
 
         }
+        
+      else if (tableName === 'countries'){
+        console.log(data);
+        const country_id = document.getElementById('country_id');
+
+        const uniqueCountries = [];
+        const seenIds = new Set();
+
+        data.forEach(row =>{
+          if(!seenIds.has(row.id)){
+            seenIds.add(row.id);
+            uniqueCountries.push({
+              id: row.id,
+              name: row.name
+            });
+          }
+        });
+
+        country_id.innerHTML = uniqueCountries.map(country =>
+          `<option value="${country_id}">${country.name}</option>`
+        ).join('');
+      }
         else {
             console.error('Error', error);
         }
@@ -63,13 +85,14 @@ async function loadTable(tableName) {
 }
 
 async function addData() {
-    const data = {
-        id: document.getElementById('id').value,
-        tittle: document.getElementById('tittle').value,
-        size: document.getElementById('size').value,
-        color: document.getElementById('color').value,
-        cost: document.getElementById('cost').value,
-        material_id: document.getElementById('material_id').value
+  const data = {
+    id: document.getElementById('id').value,
+    tittle: document.getElementById('tittle').value,
+    size: document.getElementById('size').value,
+    color: document.getElementById('color').value,
+    cost: document.getElementById('cost').value,
+    material_id: document.getElementById('material_id').value,
+    country_id: document.getElementById('country_id').value
     }
 
     try {
@@ -180,6 +203,10 @@ loadTable('camera').then(data => {
 
 loadTable('material').then(data => {
     console.log(data);
+});
+
+loadTable('countries').then(data =>{
+  console.log(data);
 });
 
 function xlsx(){
