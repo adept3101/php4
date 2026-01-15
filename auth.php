@@ -30,4 +30,17 @@ function auth($login, $password) {
         return false;
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $login = $_POST['login'] ?? '';
+    $password = $_POST['password'] ?? '';
+    
+    if (auth($login, $password)) {
+        header('Location: Index.html');
+        exit();
+    } else {
+        header('Location: login.html?error=1');
+        exit();
+    }
+}
 ?>
