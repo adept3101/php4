@@ -1,12 +1,11 @@
-<!-- <!DOCTYPE html> -->
-<!-- <html> -->
-<!---->
-<!-- <head> -->
-<!--   <meta charset="UTF-8"> -->
-<!--   <title>Таблица</title> -->
-<!--   <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script> -->
-<!-- </head> -->
-<!---->
+<?php
+// Проверяем авторизацию
+require_once 'checkAuth.php';
+$user = getCurrentUser();
+
+$csrf_token = $_SESSION['csrf_token'] ?? '';
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -23,7 +22,7 @@
   <style>
     body {
       background-color: #f8f9fa;
-      padding-top: 20px;
+      padding-top: 70px; /* Увеличили отступ сверху для фиксированной панели */
     }
     
     .container {
@@ -74,13 +73,17 @@
       border-radius: 8px;
       overflow: hidden;
     }
-  </style>
+    
+      </style>
 </head>
-
-<body>
+<a href="logout.php" class="btn btn-outline-danger btn-sm ms-3">
+          <i class="bi bi-box-arrow-right me-1"></i>Выйти
+        </a>
   <div class="container">
     <div class="row mb-4">
       <div class="col-12">
+        <h1 class="display-6">Система управления камерами</h1>
+        <p class="lead text-muted">Добро пожаловать, <?php echo htmlspecialchars($user['login']); ?>!</p>
       </div>
     </div>
 
@@ -117,6 +120,7 @@
           </div>
           <div class="card-body">
             <form id="addCamera" method="POST" action="postData.php">
+              <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
               <div class="mb-3">
                 <label for="id" class="form-label">ID</label>
                 <input type="text" class="form-control" id="id" name="id" placeholder="Введите ID">
@@ -175,6 +179,14 @@
         </div>
         
         <div class="card mt-4">
+          <div class="card-header">
+            <i class="bi bi-info-circle me-2"></i>Информация о сессии
+          </div>
+          <div class="card-body">
+            <p><strong>ID пользователя:</strong> <?php echo htmlspecialchars($user['id']); ?></p>
+            <p><strong>Логин:</strong> <?php echo htmlspecialchars($user['login']); ?></p>
+            <p><strong>Время входа:</strong> <?php echo date('H:i:s d.m.Y'); ?></p>
+          </div>
         </div>
       </div>
     </div>
