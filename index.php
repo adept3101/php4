@@ -155,13 +155,12 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
                 <label for="material_id" class="form-label">Материал</label>
                 <select class="form-select" name="material_id" id="material_id" required>
                   <option value="" selected disabled>Выберите материал</option>
-                  <!-- Опции будут добавлены через JavaScript -->
                 </select>
               </div>
 
               <div class="mb-3">
                 <label for="country_id" class="form-label">Страна</label>
-                <select class="form-select" name="counrty_id" id="country_id" required>
+                <select class="form-select" name="country_id" id="country_id" required>
                   <option value="" selected disabled>Выберите страну</option>
                 </select>
               </div>

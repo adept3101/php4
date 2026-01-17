@@ -72,7 +72,7 @@ async function loadTable(tableName) {
         });
 
         country_id.innerHTML = uniqueCountries.map(country =>
-          `<option value="${country_id}">${country.name}</option>`
+          `<option value="${country.id}">${country.name}</option>`
         ).join('');
       }
         else {

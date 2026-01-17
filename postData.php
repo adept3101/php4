@@ -20,12 +20,13 @@ function postData()
     $color = $conn->real_escape_string($data['color'] ?? '');
     $cost = $conn->real_escape_string($data['cost'] ?? '');
     $material_id = $conn->real_escape_string($data['material_id'] ?? '');
+    $country_id = $conn->real_escape_string($data['country_id'] ?? '');
 
     if (empty($id) || empty($title)) {
         return ['success' => false, 'error' => 'Required fields are missing'];
     }
 
-    $sql = "INSERT INTO camera (id, tittle, size, color, cost, material_id) VALUES ('$id', '$title', '$size', '$color', '$cost', '$material_id')";
+    $sql = "INSERT INTO camera (id, tittle, size, color, cost, material_id, country_id) VALUES ('$id', '$title', '$size', '$color', '$cost', '$material_id', '$country_id')";
 
     if ($conn->query($sql) === TRUE) {
         $result = ['success' => true, 'message' => 'Новая запись успешно добавлена'];
