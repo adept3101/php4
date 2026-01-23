@@ -14,7 +14,7 @@ function postData()
         return ['success' => false, 'error' => 'No data received or invalid JSON'];
     }
 
-    $id = $conn->real_escape_string($data['id'] ?? '');
+    /* $id = $conn->real_escape_string($data['id'] ?? ''); */
     $title = $conn->real_escape_string($data['tittle'] ?? '');
     $size = $conn->real_escape_string($data['size'] ?? '');
     $color = $conn->real_escape_string($data['color'] ?? '');
@@ -22,12 +22,9 @@ function postData()
     $material_id = $conn->real_escape_string($data['material_id'] ?? '');
     $country_id = $conn->real_escape_string($data['country_id'] ?? '');
 
-    if (empty($id) || empty($title)) {
-        return ['success' => false, 'error' => 'Required fields are missing'];
-    }
+    /* $sql = "INSERT INTO camera (id, tittle, size, color, cost, material_id, country_id) VALUES ('$id', '$title', '$size', '$color', '$cost', '$material_id', '$country_id')"; */
 
-    $sql = "INSERT INTO camera (id, tittle, size, color, cost, material_id, country_id) VALUES ('$id', '$title', '$size', '$color', '$cost', '$material_id', '$country_id')";
-
+    $sql = "INSERT INTO camera (tittle, size, color, cost, material_id, country_id) VALUES ('$title', '$size', '$color', '$cost', '$material_id', '$country_id')"; 
     if ($conn->query($sql) === TRUE) {
         $result = ['success' => true, 'message' => 'Новая запись успешно добавлена'];
     } else {

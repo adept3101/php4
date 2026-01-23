@@ -2,14 +2,26 @@
 header("Content-Type: application/json; charset=UTF-8");
 include "db_connect.php";
 
-/* $data = json_decode(); */
-
-function getData($table_name){
-    
-    $conn = connect();
-
-    /* $table = "camera"; */
-    $result = select_tb($table_name, $conn);
+function getData($table_name, $conn){
+    if ($table_name === 'camera') {
+        // Для таблицы camera делаем JOIN с таблицами material и countries
+        $sql = "SELECT 
+                    c.id, 
+                    c.tittle, 
+                    c.size, 
+                    c.color, 
+                    c.cost,
+                    m.material as material_name,
+                    co.name as country_name
+                FROM camera c
+                LEFT JOIN material m ON c.material_id = m.id
+                LEFT JOIN countries co ON c.country_id = co.id";
+        
+        $result = $conn->query($sql);
+    } else {
+        // Для других таблиц оставляем как было
+        $result = $conn->query("SELECT * FROM $table_name");
+    }
 
     $data = [];
 
@@ -19,21 +31,18 @@ function getData($table_name){
         }
     }
 
-    echo json_encode($data, JSON_UNESCAPED_UNICODE);
-    $conn->close();
+    return $data;
 }
-
-/* $result = getData("camera"); */
-/* $res = getData("material") */
 
 $input = json_decode(file_get_contents('php://input'), true);
 $tableName = $input['tableName'] ?? '';
 
 if ($tableName) {
-    getData($tableName);
+    $conn = connect();
+    $data = getData($tableName, $conn);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    $conn->close();
 } else {
     echo json_encode(['error' => 'No table name provided']);
 }
-
-
-$res = getData($data);
+?>

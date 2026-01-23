@@ -1,5 +1,4 @@
 <?php
-// Проверяем авторизацию
 require_once 'checkAuth.php';
 $user = getCurrentUser();
 
@@ -73,6 +72,38 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
       border-radius: 8px;
       overflow: hidden;
     }
+/* Стили для выбора цвета */
+.color-option {
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.color-option.selected {
+    border: 2px solid #0d6efd;
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.5);
+}
+
+.form-control-color {
+    cursor: pointer;
+}
+
+/* Индикатор выбранного цвета */
+.color-preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-right: 10px;
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+}
     
       </style>
 </head>
@@ -121,10 +152,10 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
           <div class="card-body">
             <form id="addCamera" method="POST" action="postData.php">
               <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-              <div class="mb-3">
-                <label for="id" class="form-label">ID</label>
-                <input type="text" class="form-control" id="id" name="id" placeholder="Введите ID">
-              </div>
+              <!-- <div class="mb-3"> -->
+              <!--   <label for="id" class="form-label">ID</label> -->
+              <!--   <input type="text" class="form-control" id="id" name="id" placeholder="Введите ID"> -->
+              <!-- </div> -->
               
               <div class="mb-3">
                 <label for="tittle" class="form-label">Название</label>
@@ -133,15 +164,48 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
               
               <div class="row">
                 <div class="col-md-6 mb-3">
-                  <label for="size" class="form-label">Размер</label>
-                  <input type="text" class="form-control" id="size" name="size" placeholder="Размер">
+                  <!-- <label for="size" class="form-label">Размер</label> -->
+                  <!-- <input type="text" class="form-control" id="size" name="size" placeholder="Размер"> -->
+<select class="form-select" id="size" name="size" required>
+      <option value="" selected disabled>Размер</option>
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Big">Big</option>
+    </select>
                 </div>
                 
-                <div class="col-md-6 mb-3">
-                  <label for="color" class="form-label">Цвет</label>
-                  <input type="text" class="form-control" id="color" name="color" placeholder="Цвет">
-                </div>
+                <!-- <div class="col-md-6 mb-3"> -->
+                <!--   <label for="color" class="form-label">Цвет</label> -->
+                <!--   <input type="text" class="form-control" id="color" name="color" placeholder="Цвет"> -->
+                <!-- </div> -->
               </div>
+              <div class="col-md-6 mb-3">
+  <label for="color" class="form-label">Цвет</label>
+  <div class="input-group">
+    <input type="text" class="form-control" id="color" name="color" placeholder="Выберите цвет" readonly>
+    <button type="button" class="btn btn-outline-secondary" id="color-picker-btn">
+      <i class="bi bi-palette"></i>
+    </button>
+    <input type="color" id="color-input" class="form-control form-control-color" style="width: 50px; padding: 0; border: none;">
+  </div>
+  <div class="color-palette mt-2" id="color-palette" style="display: none;">
+    <div class="d-flex flex-wrap gap-1">
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #ff0000;" data-color="#ff0000"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #00ff00;" data-color="#00ff00"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #0000ff;" data-color="#0000ff"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #ffff00;" data-color="#ffff00"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #ff00ff;" data-color="#ff00ff"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #00ffff;" data-color="#00ffff"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #ff9900;" data-color="#ff9900"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #9900ff;" data-color="#9900ff"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #333333;" data-color="#333333"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #666666;" data-color="#666666"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #999999;" data-color="#999999"></div>
+      <div class="color-option" style="width: 25px; height: 25px; background-color: #ffffff; border: 1px solid #ccc;" data-color="#ffffff"></div>
+    </div>
+    <small class="text-muted d-block mt-1">Нажмите для выбора цвета</small>
+  </div>
+</div>
               
               <div class="mb-3">
                 <label for="cost" class="form-label">Стоимость</label>
