@@ -4,7 +4,6 @@ include "db_connect.php";
 
 function getData($table_name, $conn){
     if ($table_name === 'camera') {
-        // Для таблицы camera делаем JOIN с таблицами material и countries
         $sql = "SELECT 
                     c.id, 
                     c.tittle, 

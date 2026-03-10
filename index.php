@@ -152,10 +152,7 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
           <div class="card-body">
             <form id="addCamera" method="POST" action="postData.php">
               <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-              <!-- <div class="mb-3"> -->
-              <!--   <label for="id" class="form-label">ID</label> -->
-              <!--   <input type="text" class="form-control" id="id" name="id" placeholder="Введите ID"> -->
-              <!-- </div> -->
+
               
               <div class="mb-3">
                 <label for="tittle" class="form-label">Название</label>
@@ -164,8 +161,7 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
               
               <div class="row">
                 <div class="col-md-6 mb-3">
-                  <!-- <label for="size" class="form-label">Размер</label> -->
-                  <!-- <input type="text" class="form-control" id="size" name="size" placeholder="Размер"> -->
+
 <select class="form-select" id="size" name="size" required>
       <option value="" selected disabled>Размер</option>
       <option value="Small">Small</option>
@@ -173,11 +169,7 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
       <option value="Big">Big</option>
     </select>
                 </div>
-                
-                <!-- <div class="col-md-6 mb-3"> -->
-                <!--   <label for="color" class="form-label">Цвет</label> -->
-                <!--   <input type="text" class="form-control" id="color" name="color" placeholder="Цвет"> -->
-                <!-- </div> -->
+
               </div>
               <div class="col-md-6 mb-3">
   <label for="color" class="form-label">Цвет</label>
